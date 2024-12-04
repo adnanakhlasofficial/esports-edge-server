@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const uri = "mongodb://localhost:27017/";
 
@@ -39,9 +39,37 @@ async function run() {
         });
 
         app.get("/equipments", async (req, res) => {
-            const result = await equipmentCollection.find().toArray()
+            const result = await equipmentCollection.find().toArray();
             res.send(result);
-        })
+        });
+
+        app.put("/equipment/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const prevEquipment = req.body;
+            const udpatedEquipment = {
+                $set: {
+                    username: prevEquipment.username,
+                    useremail: prevEquipment.useremail,
+                    name: prevEquipment.name,
+                    category: prevEquipment.category,
+                    price: prevEquipment.price,
+                    rating: prevEquipment.rating,
+                    customization: prevEquipment.customization,
+                    deliveryTime: prevEquipment.deliveryTime,
+                    image: prevEquipment.image,
+                    stockAvailability: prevEquipment.stockAvailability,
+                },
+            };
+
+            const result = await equipmentCollection.updateOne(
+                filter,
+                udpatedEquipment,
+                options
+            );
+            res.send(result);
+        });
 
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
