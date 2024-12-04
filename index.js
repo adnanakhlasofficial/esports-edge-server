@@ -71,6 +71,13 @@ async function run() {
             res.send(result);
         });
 
+        app.get("/equipment/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await equipmentCollection.findOne(query);
+            res.send(result);
+        });
+
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
         );
