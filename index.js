@@ -38,6 +38,11 @@ async function run() {
             res.send(result);
         });
 
+        app.get("/equipments", async (req, res) => {
+            const result = await equipmentCollection.find().toArray()
+            res.send(result);
+        })
+
         console.log(
             "Pinged your deployment. You successfully connected to MongoDB!"
         );
